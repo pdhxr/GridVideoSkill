@@ -1,8 +1,7 @@
 ---
 name: 网格视频生成skill
 description: >-
-  竖屏 Remotion 技术说明片：天花板/地板网格 + blurInUp；含可移植组件包、GitHub
-  来源、硬烧中英字幕（Noto Serif CJK SC / 推荐42 / 最小36）与双语旁白 MD，以及与网页录屏共通的专用目录/确认门禁/定稿清理工程规矩。
+  竖屏 Remotion 技术说明片（默认画幅 1080×1920）：天花板/地板网格 + blurInUp；默认字号表（标题86/节72/kicker44/正文46/字幕42）；硬烧中英字幕 Noto Serif CJK SC 默认42（36仅下限，禁止当默认）；双语旁白 MD；专用目录/确认门禁/定稿清理。
 ---
 # 网格视频生成skill
 
@@ -53,15 +52,26 @@ description: >-
 | 网格组件 | `DualRetroGrid`（可 `forceCssFallback`） |
 | 转场 | `TransitionSeries` + fade，约 0.5s（15 帧 @30fps） |
 | 文字进场 | 讲解页默认 **blurInUp**（词/短段错开模糊上浮）；**封面/开场标题保持静态**，无进场动画 |
-| 字体 | Noto Sans SC（`fonts.ts` via `@remotion/google-fonts`） |
+| 版式字体 | **Noto Sans SC**（片内标题/正文，`fonts.ts`） |
+| 字幕字体 | **Noto Serif CJK SC**（硬烧 ASS，默认 **42px**） |
 
-## 竖屏字号（@1080 宽）
+## 竖屏字号（默认成片 **1080×1920**）
 
-- **最小可读**：叠字 ≥ **36px**
-- 经验档：开场主标题约 **84–86**；节标题约 **72**；kicker 约 **44**；正文/条目/副标题约 **44–46**
+本 skill **默认竖屏**；下列字号均相对 **1080 宽 × 1920 高**。换分辨率须按宽度同比换算后再交片。
+
+| 角色 | 默认字号 | 字体 | 说明 |
+| --- | --- | --- | --- |
+| 视频标题（开场 hero） | **86px** | Noto Sans SC | `76 + fontBumpTitle(10)` |
+| 节标题（Section title） | **72px** | Noto Sans SC | `64 + FONT_BUMP_TITLE(8)` |
+| 项目 / Kicker | **44px** | Noto Sans SC | `36 + FONT_BUMP_TITLE(8)` |
+| 正文 / 条目 / 副标题 | **46px** | Noto Sans SC | `36 + FONT_BUMP_BODY(10)` |
+| 硬烧字幕（中英） | **42px** | **Noto Serif CJK SC** | ASS `Fontsize=42`；定稿默认 |
+
+- **36px 只是绝对下限**（再小视为看不清）：**禁止把 36 当默认**；正文/字幕等成片角色一律用上表默认，不得为了「省空间」改用 36。
 - 行高宜略松：标题 ~1.42，正文 ~1.62–1.65；条目间距约 36px
 - 子弹页用较高中卡带 + `space-evenly`，避免挤在中间一条
-- 写进本任务 README（成片分辨率旁注明推荐字号与最小字号）
+- 写进本任务 README（成片分辨率旁写清上表默认字号；勿只写「≥36」当规格）
+- 仓库/README 宜附一张 DualRetroGrid 背景的**字号+位置样张静图**（标题/节标题/项目/正文/字幕按默认字号，并大致落在上表位置），让人一眼知道成片观感
 
 ## 网格（天花板 / 地板）
 
@@ -76,6 +86,22 @@ description: >-
 - 冒号后长句可主动换行，避免一行过长
 - 讲解页 `revealMode="blurInUp"`；开场关动画（`none` / 自定义静态页）
 
+## 竖屏位置（默认 1080×1920，`SceneLayout` + 字幕）
+
+版式叠字与硬烧字幕**都有默认位置**，不要自由漂：
+
+| 层 | 水平 | 垂直 / 边距（默认） | 备注 |
+| --- | --- | --- | --- |
+| 开场标题页（hero） | 水平居中；左右 padding **56** | 上 **260** / 下 **340**；内容区纵向 **居中** | 视频标题 86 |
+| 普通讲解页 | 水平居中；左右 **56**；内容 maxWidth ≈ **1020** | 上 **220** / 下 **300**；条目页中卡带 **space-evenly** | 节标题 72 + kicker 44 + 正文 46 |
+| 讲解+演示合并页（packed） | 左右 **48**；maxWidth ≈ **1020** | 上 **300** / 下 **420**（给下方演示留空） | 标题略收 |
+| 仅演示页（demoOnly） | 左右 **44**；maxWidth ≈ **1040** | 上 **260** / 下 **380** | kicker/标题靠上，演示占主体 |
+| 硬烧字幕 | 水平居中；ASS `MarginL/R≈40`；行宽约 **900–1000** | 偏下：`MarginV≈**150**`（底部安全区约 **120–180**） | 中英两行总高仍须落在安全区内，不挡演示 |
+
+- 顶/底透视网格占上下缘；**正文与标题落在中卡带**，勿顶到网格灭点区
+- 字幕永远在版式正文**之下**、底网格之上；改字号后仍先核对位置再全片烧录
+- 任务 README 须写清：分辨率 + 默认字号表 + 上表边距；字号样张静图最好也标出大致落点
+
 
 ## 硬烧录字幕（定稿成片必须）
 
@@ -84,8 +110,8 @@ description: >-
 - 文案源：`public/voice/scripts.json`（或等价文案表）+ 英译；按页/`SCENE_DURATIONS` 时间轴对齐
 - **字体 / 字号（竖屏 1080×1920 定稿）**
   - 字体：**Noto Serif CJK SC**（衬线；ASS/ffmpeg 烧录默认）。片内 UI 正文仍可用 Noto Sans SC（`fonts.ts`），二者分工：衬线给烧录字幕，无衬线给版式叠字
-  - 推荐字号：**42px**（PlayRes 1080×1920 下 ASS `Fontsize=42`）
-  - **最小字号：36px**；低于则视为看不清，须放大后再交片
+  - **默认字号：42px**（PlayRes 1080×1920 下 ASS `Fontsize=42`；定稿即用此值）
+  - **绝对下限 36px**：低于则视为看不清须放大；**不得用 36 当默认**
   - 样式参考：白字、描边/半透明底、居中偏下；`MarginV` 约 **150**（底部安全区约 120–180px），不挡关键演示区；中英两行总高度仍须落在安全区内
 - 合片无字幕版可先作中间件；**交用户定稿前**必须完成烧录（见「五、8. 硬烧录字幕」）
 
@@ -132,7 +158,7 @@ description: >-
 
 - 主题、语言、页数结构（开场 / 讲解节 / 示例 / 收尾）
 - **成片像素分辨率与横竖屏**（默认 1080×1920）、fps
-- 字号 bump、最小 36px、进场动效约定（讲解 blurInUp、封面静态）
+- 字号按默认表（标题86/节72/kicker44/正文46/字幕42）；36 仅下限、进场动效约定（讲解 blurInUp、封面静态）
 - 主 composition id、关键 `Anim*` 预览 composition
 - 旁白来源（TTS 音色）、`SCENE_DURATIONS` 如何由 VO 推算
 - 示例素材清单与来源（含是否来自录屏 skill 成品）
@@ -170,11 +196,11 @@ description: >-
 - **演示节奏紧**：高潮已剪齐，加速档符合约定（默认演示 2×）
 - **开场有钩子**；**收尾有「总结」**（技术 + 工程卫生；可复用 Skill）
 - 画幅、fps、顶/底网格可见且不抢字
-- 开场静态、讲解页 blurInUp；叠字 ≥36px
+- 开场静态、讲解页 blurInUp；叠字用默认字号表；绝对不低于 36px
 - 每页旁白可听且与时长表一致；全片有 AAC（若设计有声）
 - 用户点名改过的示例/动效：已单独预览通过后再合片
 - ffprobe 核对时长与音轨
-- 定稿含硬烧**中英**字幕（Noto Serif CJK SC、推荐 42、≥36）；另有双语旁白 MD
+- 定稿含硬烧**中英**字幕（Noto Serif CJK SC、默认 42（36 仅下限））；另有双语旁白 MD
 
 ## 定稿后整理过程文件（对应录屏 skill 阶段 3）
 
@@ -360,7 +386,7 @@ Magic UI 许可一般为 **MIT**：拷贝或改编其代码时保留版权与许
    - 可选 `captions.json`：`@remotion/captions` 的 `Caption[]`
 4. 长句拆成短行；页内多句按 VO 自然停顿切条
 5. **字体字号写入样式**（ASS 示例，PlayRes 1080×1920）：
-   - `Fontname=Noto Serif CJK SC`，`Fontsize=42`（最小不得低于 **36**）
+   - `Fontname=Noto Serif CJK SC`，`Fontsize=42`（默认；绝对下限 36，不得用 36 当默认）
    - 白字 + Outline；`Alignment=2`；`MarginV≈150`；`MarginL/R≈40`
 6. **硬停（建议）**：先出 5–10 秒带字幕预览，用户 OK 字体/字号/位置后再全片烧录
 
@@ -370,7 +396,7 @@ Magic UI 许可一般为 **MIT**：拷贝或改编其代码时保留版权与许
 
 1. `npx remotion add @remotion/captions`（见 [remotion-captions](sand-workflow:remotion-captions)）
 2. 用官方 Basic Captions 元素（或等价自绘字幕层）叠在主 composition **最上层**
-3. 竖屏：字体 **Noto Serif CJK SC**；字号推荐 **42**、≥36；`bottom` 约 120–180；深色半透明底或描边；宽度约 900–1000，水平居中；中英两行
+3. 竖屏：字体 **Noto Serif CJK SC**；默认字号 **42**（绝对下限 36，不得用 36 当默认）；`bottom` 约 120–180；深色半透明底或描边；宽度约 900–1000，水平居中；中英两行
 4. 直接渲定稿：`npx remotion render <主CompositionId> out/<成片名>.mp4`
 5. 若已有无字幕 master：改 composition 加上字幕层后**重渲全片**（不要只 ffmpeg 贴一层却不同步时轴）
 
@@ -382,7 +408,7 @@ ffmpeg -y -i out/<成片名>-master.mp4 \
   -c:a copy out/<成片名>.mp4
 ```
 
-- ASS 内已定 **Noto Serif CJK SC / 42**；若改用 SRT + `force_style`，须显式 `FontName=Noto Serif CJK SC,FontSize=42,...`，且不得低于 36
+- ASS 内已定 **Noto Serif CJK SC / 42**；若改用 SRT + `force_style`，须显式 `FontName=Noto Serif CJK SC,FontSize=42,...`，默认 42；绝对下限 36，不得用 36 当默认
 - 环境须已安装该字体；缺字时先装 `fonts-noto-cjk`（或等价）再烧
 - 烧完后用播放器抽查开场、中段、结尾；`ffprobe` 确认时长与音轨仍在
 - master 可进 `_trash/` 或定稿整理时删除；**交付只留烧好字幕的文件**
@@ -390,7 +416,7 @@ ffmpeg -y -i out/<成片名>-master.mp4 \
 ### 8.4 自检
 
 - 关字幕开关仍能看见字（确认为硬烧）
-- 中英双语、字体为 Noto Serif CJK SC、字号约 42（≥36）
+- 中英双语、字体为 Noto Serif CJK SC、默认字号 42（36 仅下限）
 - 与旁白同步，无明显提前/滞后；无错字（对照 scripts.json / 旁白 MD）
 - 不遮挡示例视频关键操作区；网格与标题区不被大块字幕糊死
 
@@ -462,10 +488,10 @@ Root 注册：`width={1080}` `height={1920}` `fps={30}`，并设 `forceCssFallba
 - [ ] README 含分辨率/横竖屏、字号、动效、composition、导出命令
 - [ ] 组件包已拷入本任务 `src/`，`magicui/CREDITS.md` 仍在
 - [ ] 画幅 1080×1920 @30fps；顶/底网格可见且不抢字
-- [ ] 开场标题静态；讲解页 blurInUp；叠字 ≥36px
+- [ ] 开场标题静态；讲解页 blurInUp；叠字用默认字号表；绝对不低于 36px
 - [ ] 文案/时长/关键预览已经用户确认后再合片
 - [ ] 每页旁白与 `SCENE_DURATIONS` 对齐；全片有声（若设计有声）
-- [ ] **硬烧中英字幕**已完成：Noto Serif CJK SC、推荐 42、≥36；关播放器字幕轨仍可见
+- [ ] **硬烧中英字幕**已完成：Noto Serif CJK SC、默认 42（36 仅下限）；关播放器字幕轨仍可见
 - [ ] **双语旁白 MD**已交付（文件名标明演示/讲解片文稿）
 - [ ] 示例：高清、剪点正确；需局部放大的已单独预览通过
 - [ ] 定稿后已整理：保留清单 + 删除清单 + **工程路径**已告知用户

@@ -38,3 +38,17 @@ Skill 名称：`网格视频生成skill`
 ## 许可
 
 [MIT License](./LICENSE)。
+
+## 字号样张
+
+默认成片 **1080×1920 竖屏**。一眼对照默认字号（勿把 36px 当默认）：
+
+![竖屏默认字号样张](docs/type-specimen-1080x1920.png)
+
+| 角色 | 默认 | 字体 |
+| --- | --- | --- |
+| 视频标题 | 86px | Noto Sans SC |
+| 节标题 | 72px | Noto Sans SC |
+| 项目 / Kicker | 44px | Noto Sans SC |
+| 正文 | 46px | Noto Sans SC |
+| 硬烧字幕 | **42px** | Noto Serif CJK SC（36 仅下限） |
